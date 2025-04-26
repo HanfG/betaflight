@@ -44,14 +44,14 @@
 #define BEEPER_PIN           PA8
 #define BEEPER_PWM_HZ        3800
 
-#define SERVO1_PIN           PB12  // AF2  TMR5_CH1
-#define SERVO2_PIN           PB11  // AF2  TMR5_CH4
-#define SERVO3_PIN           PB10  // AF1  TMR2_CH3
-#define SERVO4_PIN           PB2   // AF1  TMR2_CH4
-#define SERVO5_PIN           PB9   // AF2  TMR4_CH4
-#define SERVO6_PIN           PB8   // AF1  TMR2_CH1
-#define SERVO7_PIN           PB7   // AF2  TMR4_CH2
-#define SERVO8_PIN           PB6   // AF2  TMR4_CH1
+#define SERVO7_PIN           PB12  // AF2  TMR5_CH1
+#define SERVO8_PIN           PB11  // AF2  TMR5_CH4
+#define SERVO1_PIN           PB10  // AF1  TMR2_CH3
+#define SERVO2_PIN           PB2   // AF1  TMR2_CH4
+#define SERVO3_PIN           PB9   // AF2  TMR4_CH4
+#define SERVO4_PIN           PB8   // AF1  TMR2_CH1
+#define SERVO5_PIN           PB7   // AF2  TMR4_CH2
+#define SERVO6_PIN           PB6   // AF2  TMR4_CH1
 
 #define TIMER_PIN_MAPPING \
     TIMER_PIN_MAP(0,  PB12,  1,  0) \
@@ -66,8 +66,8 @@
     TIMER_PIN_MAP(9,  PA8,   1,  -1)
 
 #define LED0_PIN             PC15
-#define LED1_PIN             PC14
-#define LED2_PIN             PC13
+#define LED1_PIN             PC13
+#define LED2_PIN             PC14
 
 #define UART1_TX_PIN         PA9
 #define UART1_RX_PIN         PA10
