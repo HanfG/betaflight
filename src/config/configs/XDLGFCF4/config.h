@@ -23,11 +23,9 @@
 #define FC_TARGET_MCU     AT32F435M
 
 #define BOARD_NAME        XDLGFCF4
-#define MANUFACTURER_ID   HANF
+#define MANUFACTURER_ID   HANF&STONE
 
-#define DEFAULT_MIXER     MIXER_CUSTOM
-
-#define MAX_SUPPORTED_SERVOS 8
+#define DEFAULT_MIXER     MIXER_CUSTOM_AIRPLANE
 
 #define USE_SERIALRX
 #define USE_ACC
@@ -67,9 +65,9 @@
     TIMER_PIN_MAP(8,  PB1,   2,  -1) \
     TIMER_PIN_MAP(9,  PA8,   1,  -1)
 
-#define LED0_PIN             PC13
+#define LED0_PIN             PC15
 #define LED1_PIN             PC14
-#define LED2_PIN             PC15
+#define LED2_PIN             PC13
 
 #define UART1_TX_PIN         PA9
 #define UART1_RX_PIN         PA10
