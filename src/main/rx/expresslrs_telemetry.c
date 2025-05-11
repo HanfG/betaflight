@@ -53,12 +53,14 @@ typedef enum {
     CRSF_FRAME_BATTERY_SENSOR_INDEX,
     CRSF_FRAME_ATTITUDE_INDEX,
     CRSF_FRAME_FLIGHT_MODE_INDEX,
+    CRSF_FRAME_BARO_ALTITUDE_INDEX,
     CRSF_FRAME_PAYLOAD_TYPES_COUNT //should be last
 } frameTypeIndex_e;
 
 static crsfFrameType_e payloadTypes[] = {
     CRSF_FRAMETYPE_GPS,
     CRSF_FRAMETYPE_BATTERY_SENSOR,
+    CRSF_FRAMETYPE_BARO_ALTITUDE,
     CRSF_FRAMETYPE_ATTITUDE,
     CRSF_FRAMETYPE_FLIGHT_MODE
 };
@@ -336,6 +338,11 @@ void initTelemetry(void)
     if (featureIsEnabled(FEATURE_GPS)
        && telemetryIsSensorEnabled(SENSOR_ALTITUDE | SENSOR_LAT_LONG | SENSOR_GROUND_SPEED | SENSOR_HEADING)) {
         tlmSensors |= BIT(CRSF_FRAME_GPS_INDEX);
+    }
+#endif
+#ifdef USE_BARO
+    if (telemetryIsSensorEnabled(SENSOR_ALTITUDE)) {
+        tlmSensors |= BIT(CRSF_FRAME_BARO_ALTITUDE_INDEX);
     }
 #endif
 

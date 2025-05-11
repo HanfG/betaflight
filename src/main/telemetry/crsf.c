@@ -63,6 +63,7 @@
 
 #include "sensors/battery.h"
 #include "sensors/sensors.h"
+#include "sensors/barometer.h"
 
 #include "telemetry/telemetry.h"
 #include "telemetry/msp_shared.h"
@@ -283,6 +284,50 @@ void crsfFrameBatterySensor(sbuf_t *dst)
     sbufWriteU8(dst, (uint8_t)mAhDrawn);
     sbufWriteU8(dst, batteryRemainingPercentage);
 }
+
+#ifdef USE_BARO
+/*
+0x09 Barometric Altitude & Vertical Speed
+Payload:
+uint16_t    altitude_packed
+int8_t      vertical_speed_packed
+*/
+void crsfFrameBaroAltitude(sbuf_t *dst)
+{
+
+    // use sbufWrite since CRC does not include frame length
+    sbufWriteU8(dst, CRSF_FRAME_BARO_ALTITUDE_PAYLOAD_SIZE + CRSF_FRAME_LENGTH_TYPE_CRC);
+    sbufWriteU8(dst, CRSF_FRAMETYPE_BARO_ALTITUDE);
+
+    enum {
+        ALT_MIN_DM = 10000, // minimum altitude in dm
+        ALT_THRESHOLD_DM = 0x8000 - ALT_MIN_DM, // altitude of precision changing in dm
+        ALT_MAX_DM = 0x7ffe * 10 - 5, // maximum altitude in dm
+    };
+
+    uint16_t altitude_packed = 0;
+    int32_t altitude_dm = sensors(SENSOR_BARO) ? (getBaroAltitude() / 10) : 0;
+    if (altitude_dm < -ALT_MIN_DM) { // less than minimum altitude
+        altitude_packed = 0; // minimum
+    } else if (altitude_dm > ALT_MAX_DM) { // more than maximum
+        altitude_packed = 0xfffe; // maximum
+    } else if (altitude_dm < ALT_THRESHOLD_DM) { // dm-resolution range
+        altitude_packed = altitude_dm + ALT_MIN_DM;
+    } else {
+        altitude_packed = ((altitude_dm + 5) / 10) | 0x8000; // meter-resolution range
+    }
+    sbufWriteU16BigEndian(dst, altitude_packed); // Altitude above start (calibration) point
+
+#ifdef USE_VARIO
+    const int Kl = 100; // linearity constant;
+    const float Kr = .026; // range constant;
+    int16_t vertical_speed_cm_s = getEstimatedVario();
+    sbufWriteU8(dst, (log_approx(ABS(vertical_speed_cm_s) / Kl + 1) / Kr) * SIGN(vertical_speed_cm_s));
+#else
+    sbufWriteU8(dst, 0);
+#endif
+}
+#endif
 
 /*
 0x0B Heartbeat
@@ -623,6 +668,7 @@ typedef enum {
     CRSF_FRAME_FLIGHT_MODE_INDEX,
     CRSF_FRAME_GPS_INDEX,
     CRSF_FRAME_HEARTBEAT_INDEX,
+    CRSF_FRAME_BARO_ALTITUDE_INDEX,
     CRSF_SCHEDULE_COUNT_MAX
 } crsfFrameTypeIndex_e;
 
@@ -692,6 +738,13 @@ static void processCrsf(void)
         crsfFinalize(dst);
     }
 #endif
+#ifdef USE_BARO
+    if (currentSchedule & BIT(CRSF_FRAME_BARO_ALTITUDE_INDEX)) {
+        crsfInitializeFrame(dst);
+        crsfFrameBaroAltitude(dst);
+        crsfFinalize(dst);
+    }
+#endif
 
 #if defined(USE_CRSF_V3)
     if (currentSchedule & BIT(CRSF_FRAME_HEARTBEAT_INDEX)) {
@@ -758,6 +811,11 @@ void initCrsfTelemetry(void)
     if (featureIsEnabled(FEATURE_GPS)
        && telemetryIsSensorEnabled(SENSOR_ALTITUDE | SENSOR_LAT_LONG | SENSOR_GROUND_SPEED | SENSOR_HEADING)) {
         crsfSchedule[index++] = BIT(CRSF_FRAME_GPS_INDEX);
+    }
+#endif
+#ifdef USE_BARO
+    if (telemetryIsSensorEnabled(SENSOR_ALTITUDE)) {
+        crsfSchedule[index++] = BIT(CRSF_FRAME_BARO_ALTITUDE_INDEX);
     }
 #endif
 
