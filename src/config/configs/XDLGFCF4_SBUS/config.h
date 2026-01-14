@@ -22,7 +22,7 @@
 #pragma once
 #define FC_TARGET_MCU     AT32F435M
 
-#define BOARD_NAME        XDLGFCF4
+#define BOARD_NAME        XDLGFCF4_SBUS
 #define MANUFACTURER_ID   HANF&STONE
 
 #define DEFAULT_MIXER     MIXER_CUSTOM_AIRPLANE
@@ -43,26 +43,24 @@
 #define BEEPER_PIN           PA8
 #define BEEPER_PWM_HZ        3800
 
-#define SERVO7_PIN           PB8   // AF2  TMR4_CH3
-#define SERVO8_PIN           PB9   // AF2  TMR4_CH4
+// #define SERVO7_PIN           PB8   // AF2  TMR4_CH3
+// #define SERVO8_PIN           PB9   // AF2  TMR4_CH4
+#define SERVO5_PIN           PB6   // AF2  TMR4_CH1
+#define SERVO6_PIN           PB7   // AF2  TMR4_CH2
 #define SERVO1_PIN           PB2   // AF1  TMR2_CH4
 #define SERVO2_PIN           PB10  // AF1  TMR2_CH3
 #define SERVO3_PIN           PB11  // AF2  TMR5_CH4
 #define SERVO4_PIN           PB12  // AF2  TMR5_CH1
-#define SERVO5_PIN           PB6   // AF2  TMR4_CH1
-#define SERVO6_PIN           PB7   // AF2  TMR4_CH2
 
 #define TIMER_PIN_MAPPING \
-    TIMER_PIN_MAP(0,  PB8,   1,   0) \
-    TIMER_PIN_MAP(1,  PB9,   2,  -1) \
+    TIMER_PIN_MAP(0,  PB6,   1,  -1) \
+    TIMER_PIN_MAP(1,  PB7,   1,  -1) \
     TIMER_PIN_MAP(2,  PB2,   1,  -1) \
     TIMER_PIN_MAP(3,  PB10,  1,  -1) \
     TIMER_PIN_MAP(4,  PB11,  2,  -1) \
     TIMER_PIN_MAP(5,  PB12,  1,  -1) \
-    TIMER_PIN_MAP(6,  PB6,   1,  -1) \
-    TIMER_PIN_MAP(7,  PB7,   1,  -1) \
-    TIMER_PIN_MAP(8,  PB1,   2,  -1) \
-    TIMER_PIN_MAP(9,  PA8,   1,  -1)
+    TIMER_PIN_MAP(6,  PB1,   2,  -1) \
+    TIMER_PIN_MAP(7,  PA8,   1,  -1)
 
 #define LED0_PIN             PC15
 #define LED1_PIN             PC13
@@ -75,6 +73,9 @@
 #define UART4_TX_PIN         PH3
 #define UART4_RX_PIN         PH2
 
+#define UART5_TX_PIN         PB8
+#define UART5_RX_PIN         PB9
+
 #define I2C3_SCL_PIN         PB15
 #define I2C3_SDA_PIN         PB14
 
@@ -86,16 +87,9 @@
 #define SPI3_SDI_PIN         PB4
 #define SPI3_SDO_PIN         PB5
 
-// #define USE_SDCARD_SPI
-// #define SDCARD_SPI_INSTANCE  SPI3
-// #define SDCARD_SPI_CS_PIN    PA15
-// #define DEFAULT_BLACKBOX_DEVICE          BLACKBOX_DEVICE_SDCARD
-
-#define USE_FLASH
-#define USE_FLASH_W25N01G
-#define FLASH_SPI_INSTANCE        SPI3
-#define FLASH_CS_PIN              PA15
-#define DEFAULT_BLACKBOX_DEVICE   BLACKBOX_DEVICE_FLASH
+#define USE_SDCARD_SPI
+#define SDCARD_SPI_INSTANCE  SPI3
+#define SDCARD_SPI_CS_PIN    PA15
 
 #define GYRO_1_EXTI_PIN      PB0
 #define GYRO_1_CS_PIN        PA4
@@ -114,6 +108,7 @@
 #define SERIALRX_UART                    SERIAL_PORT_USART2
 #define GPS_UART                         SERIAL_PORT_USART1
 
+#define DEFAULT_BLACKBOX_DEVICE          BLACKBOX_DEVICE_SDCARD
 #define DEFAULT_VOLTAGE_METER_SOURCE     VOLTAGE_METER_ADC
 #define DEFAULT_VOLTAGE_METER_SCALE      43
 
